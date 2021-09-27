@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import songsRouter from './routes/songs-route';
+import albumsRouter from './routes/albums-route';
 
 const app = express();
 app.use(express.json());
@@ -16,6 +17,7 @@ app.get('/api/ping', (_, res) => {
 });
 
 app.use('/api/songs', songsRouter);
+app.use('/api/albums', albumsRouter);
 
 app.listen(PORT, () => {
   // console.log(`Now listening on port ${PORT}`);

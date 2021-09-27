@@ -18,5 +18,5 @@ app.get('/api/ping', (_, res) => {
 app.use('/api/songs', songsRouter);
 
 app.listen(PORT, () => {
-  console.log(`Now listening on port ${PORT}`);
+  // console.log(`Now listening on port ${PORT}`);
 });

@@ -3,7 +3,7 @@ import { searchSongs } from '../service/songs-service';
 
 const router = express.Router();
 
-router.get('songs/search', async (req, res) => {
+router.get('/search', async (req, res) => {
   const { lyrics } = req.query;
   if (!lyrics) { return res.status(400).json({ error: 'Please provide lyrics' }); }
   // try {

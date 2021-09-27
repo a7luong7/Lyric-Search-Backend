@@ -10,7 +10,7 @@ router.get('/search', async (req, res) => {
 
   const albumRes = await searchAlbum(albumTitle as string, artist as string);
   console.log('album res', albumRes);
-  if (albumRes.count === 0) { return res.status(200).json({ }); }
+  if (albumRes.count === 0 || !albumRes.releases) { return res.status(200).json({ }); }
   const album = albumRes.releases[0];
 
   const albumArtRes = await searchAlbumArt(album.id as string);

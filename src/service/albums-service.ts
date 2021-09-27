@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { sampleAlbumArt, sampleAlbums } from '../data';
+import { AlbumRes, AlbumArtRes } from '../types';
 
-export const searchAlbum = async (title:string, artist:string) => {
+export const searchAlbum = async (title:string, artist:string) : Promise<AlbumRes> => {
   const limit = 5;
   const primaryType = 'album';
   const baseUrl = 'https://musicbrainz.org/ws/2/release';
@@ -9,10 +10,10 @@ export const searchAlbum = async (title:string, artist:string) => {
 
   console.log('album search url', url);
   return sampleAlbums;
-  return axios.get(url).then((res) => res.data);
+  // return axios.get(url).then((res) => res.data);
 };
 
-export const searchAlbumArt = async (id:string) => {
+export const searchAlbumArt = async (id:string) : Promise<AlbumArtRes> => {
   const url = `http://coverartarchive.org/release/${id}`;
   return sampleAlbumArt;
   return axios.get(url).then((res) => res.data);

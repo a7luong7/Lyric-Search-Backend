@@ -14,6 +14,7 @@ export interface Song {
   track: {
     track_id: number,
     track_name: string,
+    track_rating: number,
     album_id: number,
     album_name: string,
     album_coverart?: string,
@@ -24,7 +25,8 @@ export interface Song {
 export interface AlbumRes {
   count: number,
   offset: number,
-  releases?: Album[]
+  releases?: Album[],
+  'release-groups'?: Album[]
 }
 
 interface AlbumTag {
@@ -36,10 +38,27 @@ export interface Album {
   id: string,
   title: string,
   date: string,
+  score: number,
+  count: number,
+  'primary-type'?: string,
   'packaging-id'?: string,
   'release-group': AlbumReleaseGroup,
+  'cover-art-archive': AlbumCoverArtArchive,
   tags?: AlbumTag[],
   album_coverart?: string
+}
+
+export interface AlbumReleases {
+  'release-count': number,
+  'release-offset': number,
+  'releases': Album[]
+}
+
+export interface AlbumCoverArtArchive {
+  count: number,
+  back: boolean,
+  front: boolean,
+  artwork: boolean,
 }
 
 export interface AlbumReleaseGroup {

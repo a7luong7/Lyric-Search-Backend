@@ -1,5 +1,5 @@
 import express from 'express';
-import { searchAlbum, searchAlbumArt } from '../service/albums-service';
+import { searchReleaseGroup, searchAlbumArt } from '../service/albums-service';
 
 const router = express.Router();
 
@@ -16,16 +16,10 @@ router.get('/search', async (req, res) => {
   console.log('albim title', albumTitle);
 
   try {
-    const albumRes = await searchAlbum(albumTitle as string, artist as string);
-    // console.log('album res', albumRes);
+    const albumRes = await searchReleaseGroup(albumTitle as string, artist as string);
     if (albumRes.count === 0 || !albumRes.releases) { return res.status(200).json({ }); }
-    const albumsWithPackaging = albumRes.releases.filter((x) => x['packaging-id']);
-    // console.log('albums with packaging', albumsWithPackaging);
-    const album = albumsWithPackaging.length > 0
-      ? albumsWithPackaging[0]
-      : albumRes.releases[0];
-    // const album = albumRes.releases[0];
-    console.log(`album ${album.title} is of type ${album['release-group']['primary-type']}`);
+    const album = albumRes.releases[0];
+
     const albumArtRes = await searchAlbumArt(album.id as string);
     if (albumArtRes.images.length !== 0) {
       album.album_coverart = albumArtRes.images[0].thumbnails.small;

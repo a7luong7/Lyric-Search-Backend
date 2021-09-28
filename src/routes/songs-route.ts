@@ -1,5 +1,6 @@
 import express from 'express';
-import { searchSongs } from '../service/songs-service';
+import e from 'express';
+import { searchSongs, filterSongs } from '../service/songs-service';
 import { getAlbumFromSong } from '../service/albums-service';
 import { Song, SongLookupRes } from '../types';
 
@@ -8,33 +9,52 @@ const router = express.Router();
 router.get('/search', async (req, res) => {
   const { lyrics } = req.query;
   if (!lyrics) { return res.status(400).json({ error: 'Please provide lyrics' }); }
-  // try {
-  //     const newPatientRequest = toNewPatientRequest(req.body);
-  //     const newPatient = PatientsService.addPatient(newPatientRequest);
-  //     res.status(200).json(newPatient);
-  // } catch (error : any) {
-  //     console.log('request', req.body);
-  //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  //     res.status(400).json({ error: error.message });
-  // }
+
   try {
     const songSearchRes = await searchSongs(lyrics as string);
     console.log('song search res', songSearchRes);
+    // return res.status(200).json(songSearchRes.track_list);
+    const filteredSongs = filterSongs(songSearchRes.track_list);
     const songs = <Song[]>[];
-    if (songSearchRes.track_list && songSearchRes.track_list.length !== 0) {
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < songSearchRes.track_list.length; i++) {
-        const song = songSearchRes.track_list[i];
-        // eslint-disable-next-line no-await-in-loop
-        const album = await getAlbumFromSong(song);
-        if (album) {
-          song.track.album_coverart = album.album_coverart || '';
-          songs.push(song);
-        }
+    const promises = [];
+
+    // eslint-disable-next-line no-plusplus
+    for (let i = 0; i < filteredSongs.length; i++) {
+      const song = filteredSongs[i];
+
+      // const promise = new Promise((resolve, reject) => {
+      //   getAlbumFromSong(song).then((album) => {
+      //     if (album) {
+      //       song.track.album_coverart = album.album_coverart || '';
+      //       // songs.push(song);
+      //     }
+      //     songs.push(song);
+      //     resolve(album);
+      //   }).catch((e) => {
+      //     songs.push(song);
+      //     reject();
+      //   });
+      // });
+      // promises.push(promise);
+
+      // eslint-disable-next-line no-await-in-loop
+      const album = await getAlbumFromSong(song);
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (album) {
+        song.track.album_coverart = album.album_coverart || '';
+        songs.push(song);
       }
+      // songs.push(song);
     }
 
-    return res.status(200).json(songs);
+    // await Promise.all(promises);
+    const sortedSongs = songs.sort((a, b) => {
+      if (a.track.track_rating < b.track.track_rating) return 1;
+      if (a.track.track_rating > b.track.track_rating) return -1;
+      return 0;
+    });
+    return res.status(200).json(sortedSongs);
   } catch (e) {
     console.log('search song error', e);
     return res.status(500).json({ error: 'Could not get songs' });

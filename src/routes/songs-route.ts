@@ -40,7 +40,7 @@ router.get('/search', async (req, res) => {
       // eslint-disable-next-line no-await-in-loop
       const album = await getAlbumFromSong(song);
       // eslint-disable-next-line no-await-in-loop
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 200));
       if (album) {
         song.track.album_coverart = album.album_coverart || '';
         songs.push(song);

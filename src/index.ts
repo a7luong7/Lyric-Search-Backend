@@ -1,24 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import songsRouter from './routes/songs-route';
-import albumsRouter from './routes/albums-route';
+// import songsRouter from './routes/songs-route';
+// import albumsRouter from './routes/albums-route';
+import { songsRouter, albumsRouter } from './routes';
 
 const app = express();
 app.use(express.json());
-
-// const corsOptions: cors.CorsOptions = {
-//     origin: ['http//:localhost:3000','https//:localhost:3000']
-// };
-app.use(cors());
-const PORT = 3001;
-
-app.get('/api/ping', (_, res) => {
-  res.send('pong');
-});
+if (process.env.NODE_ENV !== 'production') { app.use(cors()); }
 
 app.use('/api/songs', songsRouter);
 app.use('/api/albums', albumsRouter);
 
-app.listen(PORT, () => {
-  // console.log(`Now listening on port ${PORT}`);
-});
+app.listen(process.env.PORT, () => {});

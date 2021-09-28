@@ -30,7 +30,7 @@ export const getReleaseGroupAlbums = async (id:string) : Promise<Album[]> => {
 };
 
 export const searchAlbumArt = async (id:string) : Promise<AlbumArtRes> => {
-  const url = `http://coverartarchive.org/release/${id}`;
+  const url = `http://coverartarchive.org/release/${id}-250`;
   // return sampleAlbumArt;
   return axios.get(url).then((res) => res.data);
 };
@@ -57,7 +57,7 @@ export const getAlbumFromSong = async (song:Song) => {
         if (a.count > b.count) return -1;
         return 0;
       });
-    console.log('release groups', releaseGroupsFiltered);
+    // console.log('release groups', releaseGroupsFiltered);
     const releaseGroup = releaseGroupsFiltered[0];
     if (releaseGroup['primary-type'] !== 'Album' && releaseGroup['primary-type'] !== 'Single') { return null; }
     console.log(`release group for ${albumTitle} primary type`, releaseGroup['primary-type']);

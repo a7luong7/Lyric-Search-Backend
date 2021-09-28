@@ -37,8 +37,8 @@ export const searchAlbumArt = async (id:string) : Promise<AlbumArtRes> => {
 
 export const getAlbumFromSong = async (song:Song) => {
   try {
-    let artist = song.track.artist_name;
-    let albumTitle = song.track.album_name;
+    let artist = song.artist_name;
+    let albumTitle = song.album_name;
     if (artist.includes('feat.')) { artist = artist.substring(0, artist.indexOf('feat.')).trim(); }
     if (albumTitle.includes('(')) { albumTitle = albumTitle.substring(0, albumTitle.indexOf('(')).trim(); }
     if (albumTitle.endsWith('- Single')) { albumTitle = albumTitle.substring(0, albumTitle.indexOf('- Single')).trim(); }

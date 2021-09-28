@@ -1,8 +1,7 @@
 import express from 'express';
-import e from 'express';
 import { searchSongs, filterSongs } from '../service/songs-service';
 import { getAlbumFromSong } from '../service/albums-service';
-import { Song, SongLookupRes } from '../types';
+import { Song } from '../types';
 
 const router = express.Router();
 
@@ -12,9 +11,8 @@ router.get('/search', async (req, res) => {
 
   try {
     const songSearchRes = await searchSongs(lyrics as string);
-    console.log('song search res', songSearchRes);
     // return res.status(200).json(songSearchRes.track_list);
-    const filteredSongs = filterSongs(songSearchRes.track_list);
+    const filteredSongs = filterSongs(songSearchRes);
     const songs = <Song[]>[];
     const promises = [];
 
@@ -42,7 +40,7 @@ router.get('/search', async (req, res) => {
       // eslint-disable-next-line no-await-in-loop
       await new Promise((resolve) => setTimeout(resolve, 200));
       if (album) {
-        song.track.album_coverart = album.album_coverart || '';
+        song.album_coverart = album.album_coverart || '';
         songs.push(song);
       }
       // songs.push(song);
@@ -50,8 +48,8 @@ router.get('/search', async (req, res) => {
 
     // await Promise.all(promises);
     const sortedSongs = songs.sort((a, b) => {
-      if (a.track.track_rating < b.track.track_rating) return 1;
-      if (a.track.track_rating > b.track.track_rating) return -1;
+      if (a.track_rating < b.track_rating) return 1;
+      if (a.track_rating > b.track_rating) return -1;
       return 0;
     });
     return res.status(200).json(sortedSongs);

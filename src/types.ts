@@ -1,25 +1,23 @@
-// export interface SongLookupRes {
-//   message: {
-//     body: {
-//       track_list: Song[]
-//     }
-//   }
-// }
-
-export interface SongLookupRes {
-  track_list: Song[]
+export interface Song {
+  track_id: number,
+  track_name: string,
+  track_rating: number,
+  album_id: number,
+  album_name: string,
+  album_coverart?: string,
+  artist_name: string
 }
 
-export interface Song {
-  track: {
-    track_id: number,
-    track_name: string,
-    track_rating: number,
-    album_id: number,
-    album_name: string,
-    album_coverart?: string,
-    artist_name: string
+export interface MusixMatchTrackSearchRes {
+  message: {
+    body: {
+      track_list: MusixMatchTrack[]
+    }
   }
+}
+
+export interface MusixMatchTrack {
+  track: Song
 }
 
 export interface AlbumRes {

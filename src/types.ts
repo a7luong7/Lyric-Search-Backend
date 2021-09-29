@@ -31,6 +31,28 @@ export interface ReleaseGroupRelease {
   status: string
 }
 
+export interface MusicBrainsReleasesRes {
+  'release-count': number,
+  'release-offset': number,
+  releases: Release[]
+}
+
+export interface Release {
+  id: string,
+  date: string,
+  title: string,
+  status: string,
+  'cover-art-archive': ReleaseCoverArtArchive,
+  'album_coverart'? : string
+}
+
+export interface ReleaseCoverArtArchive {
+  count: number,
+  front: boolean,
+  back: boolean,
+  artwork: boolean
+}
+
 export interface Song {
   track_id: number,
   track_name: string,

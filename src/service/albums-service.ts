@@ -4,6 +4,7 @@ import {
 } from '../data';
 import {
   AlbumRes, AlbumArtRes, AlbumReleases, Song, Album, MusicBrainsReleaseGroupRes,
+  MusicBrainsReleasesRes, Release,
 } from '../types';
 
 export const searchReleaseGroup = async (title:string, artist:string)
@@ -21,10 +22,14 @@ export const searchReleaseGroup = async (title:string, artist:string)
     });
 };
 
-export const getReleaseGroupAlbums = async (id:string) : Promise<Album[]> => {
+export const getReleaseGroupAlbums = async (id:string)
+: Promise<MusicBrainsReleasesRes> => {
   const baseUrl = 'https://musicbrainz.org/ws/2/release';
   const url = `${baseUrl}/?release-group=${id}&fmt=json`;
-  return axios.get(url).then((res) => res.data.releases)
+
+  return sampleReleases;
+  return axios.get(url)
+    .then((res) => res.data.releases)
     .catch((e) => {
       console.log(e);
       console.log('release group albums error', url);
@@ -37,7 +42,8 @@ export const searchAlbumArt = async (id:string) : Promise<AlbumArtRes> => {
   return axios.get(url).then((res) => res.data);
 };
 
-export const getAlbumFromSong = async (song:Song) => {
+export const getAlbumFromSong = async (song:Song)
+: Promise<Release | null> => {
   try {
     let artist = song.artist_name;
     let albumTitle = song.album_name;
@@ -48,10 +54,8 @@ export const getAlbumFromSong = async (song:Song) => {
     if (albumTitle.endsWith('- Side B')) { albumTitle = albumTitle.substring(0, albumTitle.indexOf('- Side B')).trim(); }
 
     const releaseGroupRes = await searchReleaseGroup(albumTitle, artist);
-    if (releaseGroupRes.count === 0 || !releaseGroupRes['release-groups']) {
-      console.log('no release groups found for', albumTitle);
-      return null;
-    }
+    if (releaseGroupRes.count === 0 || !releaseGroupRes['release-groups']) { return null; }
+
     const releaseGroupsFiltered = releaseGroupRes['release-groups']
       .filter((x) => x.score > 90)
       .sort((a, b) => {
@@ -59,45 +63,21 @@ export const getAlbumFromSong = async (song:Song) => {
         if (a.count > b.count) return -1;
         return 0;
       });
-    // console.log('release groups', releaseGroupsFiltered);
+
     const releaseGroup = releaseGroupsFiltered[0];
     if (releaseGroup['primary-type'] !== 'Album' && releaseGroup['primary-type'] !== 'Single') { return null; }
-    console.log(`release group for ${albumTitle} primary type`, releaseGroup['primary-type']);
 
-    const albumsRes = await getReleaseGroupAlbums(releaseGroup.id);
-    if (albumsRes.length === 0) {
-      console.log('no albums found for', albumTitle);
-      return null;
-    }
-    // console.log('found albums for', albumTitle);
-    // console.log('album res', albumsRes);
-    // console.log('album res', albumsRes);
+    const releasesRes = await getReleaseGroupAlbums(releaseGroup.id);
+    if (releasesRes['release-count'] === 0) { return null; }
 
-    const albumsWithArt = albumsRes.filter((x) => x['cover-art-archive'].count > 0);
-    if (artist === 'UPSAHL') {
-      console.log('UPSAHL', albumsRes);
-      console.log('albums with art counts is', albumsWithArt.length);
+    const releasesWithArt = releasesRes.releases.filter((x) => x['cover-art-archive'].count > 0);
+    const releaseWithArt = releasesWithArt[0];
+    if (releasesWithArt.length > 0) {
+      releaseWithArt.album_coverart = `http://coverartarchive.org/release/${releaseWithArt.id}/front`;
     }
 
-    if (albumsWithArt.length > 0) {
-      const albumWithArt = albumsWithArt[0];
-      albumWithArt.album_coverart = `http://coverartarchive.org/release/${albumWithArt.id}/front`;
-      return albumWithArt;
-    }
-
-    console.log(`no images found for album id: ${albumsRes[0].id} release id:${releaseGroup.id}`);
-
-    return albumsRes[0];
-
-    // album.album_coverart = `http://coverartarchive.org/release/${album.id}/front`;
-
-    // const albumArtRes = await searchAlbumArt(album.id as string);
-    // if (albumArtRes.images.length !== 0) {
-    //   album.album_coverart = albumArtRes.images[0].thumbnails.small;
-    // }
-    // return album;
+    return releaseWithArt;
   } catch (e) {
-    // console.log('error', e);
     return null;
   }
 };

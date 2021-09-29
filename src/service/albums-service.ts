@@ -6,6 +6,7 @@ import {
   AlbumRes, AlbumArtRes, AlbumReleases, Song, Album, MusicBrainsReleaseGroupRes,
   MusicBrainsReleasesRes, Release,
 } from '../types';
+import { sortBy } from '../utils';
 
 export const searchReleaseGroup = async (title:string, artist:string)
 : Promise<MusicBrainsReleaseGroupRes> => {
@@ -56,15 +57,10 @@ export const getAlbumFromSong = async (song:Song)
     const releaseGroupRes = await searchReleaseGroup(albumTitle, artist);
     if (releaseGroupRes.count === 0 || !releaseGroupRes['release-groups']) { return null; }
 
-    const releaseGroupsFiltered = releaseGroupRes['release-groups']
-      .filter((x) => x.score > 90)
-      .sort((a, b) => {
-        if (a.count < b.count) return 1;
-        if (a.count > b.count) return -1;
-        return 0;
-      });
+    const releaseGroupsFiltered = releaseGroupRes['release-groups'].filter((x) => x.score > 90);
+    const releaseGroupsSorted = sortBy(releaseGroupsFiltered, 'count');
 
-    const releaseGroup = releaseGroupsFiltered[0];
+    const releaseGroup = releaseGroupsSorted[0];
     if (releaseGroup['primary-type'] !== 'Album' && releaseGroup['primary-type'] !== 'Single') { return null; }
 
     const releasesRes = await getReleaseGroupAlbums(releaseGroup.id);

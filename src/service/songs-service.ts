@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { sampleSongs, sampleAlbumArt, sampleAlbums } from '../data';
+import { sampleSongs } from '../data';
 import { Song, MusixMatchTrackSearchRes } from '../types';
 import { MUSIXMATCH_API_KEY } from '../config';
 
@@ -57,6 +57,7 @@ export const filterSongs = (songs:Song[]) : Song[] => {
         if (a.track_name.length < b.track_name.length) return -1;
         return 0;
       })[0];
+
       if (songName.length < shortestSameSong.track_name.length) {
         filteredSongs = filteredSongs.filter((x) => x.track_id !== shortestSameSong.track_id);
         filteredSongs.push(song);

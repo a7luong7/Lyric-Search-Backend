@@ -16,13 +16,13 @@ router.get('/search', async (req, res) => {
   console.log('albim title', albumTitle);
 
   try {
-    const albumRes = await searchReleaseGroup(albumTitle as string, artist as string);
-    if (albumRes.count === 0 || !albumRes.releases) { return res.status(200).json({ }); }
-    const album = albumRes.releases[0];
+    const releaseGroupsRes = await searchReleaseGroup(albumTitle as string, artist as string);
+    if (releaseGroupsRes.count === 0 || !releaseGroupsRes['release-groups']) { return res.status(200).json({ }); }
+    const album = releaseGroupsRes['release-groups'][0];
 
     const albumArtRes = await searchAlbumArt(album.id as string);
     if (albumArtRes.images.length !== 0) {
-      album.album_coverart = albumArtRes.images[0].thumbnails.small;
+      // album.album_coverart = albumArtRes.images[0].thumbnails.small;
     }
     return res.status(200).json(album);
   } catch (e) {

@@ -1,18 +1,20 @@
 import axios from 'axios';
-import { sampleAlbumArt, sampleAlbums } from '../data';
 import {
-  AlbumRes, AlbumArtRes, AlbumReleases, Song, Album,
+  sampleAlbumArt, sampleAlbums, sampleReleases, sampleReleaseGroups,
+} from '../data';
+import {
+  AlbumRes, AlbumArtRes, AlbumReleases, Song, Album, MusicBrainsReleaseGroupRes,
 } from '../types';
 
-export const searchReleaseGroup = async (title:string, artist:string) : Promise<AlbumRes> => {
-  const limit = 10;
-  const primaryType = 'album';
+export const searchReleaseGroup = async (title:string, artist:string)
+: Promise<MusicBrainsReleaseGroupRes> => {
+  const limit = 1;
   const baseUrl = 'https://musicbrainz.org/ws/2/release-group';
   const url = `${baseUrl}?query=release:${encodeURI(title)} AND artist:${encodeURI(artist)}&limit=${limit}&fmt=json`;
 
-  // console.log('album search url', url);
-  // return sampleAlbums;
-  return axios.get(url).then((res) => res.data)
+  return sampleReleaseGroups;
+  return axios.get(url)
+    .then((res) => res.data)
     .catch((e) => {
       console.log(e);
       console.log('release group error', url);

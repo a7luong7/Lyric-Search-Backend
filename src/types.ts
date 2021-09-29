@@ -1,3 +1,36 @@
+export interface MusicBrainsReleaseGroupRes {
+  created: string,
+  count: number,
+  offset: number,
+  'release-groups': ReleaseGroup[]
+}
+
+export interface ReleaseGroup {
+  id: string,
+  score: number,
+  count: number,
+  title: string,
+  'first-release-date': string,
+  'primary-type': string,
+  'artist-credit': ReleaseGroupArtistCredit[],
+  releases: ReleaseGroupRelease[]
+}
+
+export interface ReleaseGroupArtistCredit {
+  name: string,
+  artist: {
+    id: string,
+    name: string
+  }
+}
+
+export interface ReleaseGroupRelease {
+  id: string,
+  'status-id': string,
+  title: string,
+  status: string
+}
+
 export interface Song {
   track_id: number,
   track_name: string,

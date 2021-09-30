@@ -8,6 +8,8 @@ import {
   sortBy, wait, logError, returnResponseError, returnBadRequest, returnResponseSuccess,
 } from '../utils';
 
+require('express-async-errors');
+
 const router = express.Router();
 
 const getReleaseFromSongPromise = (songs:Song[], song:Song) : Promise<Release | null> => {
@@ -30,7 +32,11 @@ const getReleaseFromSongPromise = (songs:Song[], song:Song) : Promise<Release | 
 
 router.get('/search', async (req, res) => {
   const { lyrics } = req.query;
-  if (!lyrics) { returnBadRequest(res, 'Please provide both the artist name and album title'); }
+  if (!lyrics) { return returnBadRequest(res, 'Please provide both the artist name and album title'); }
+
+  const songgg = 0;
+  const sg = 3 / songgg;
+  throw new Error('asdsdd');
 
   try {
     const songSearchRes = await searchSongs(lyrics as string);

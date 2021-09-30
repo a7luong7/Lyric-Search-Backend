@@ -3,7 +3,9 @@ import { sampleAlbumArt, sampleReleases, sampleReleaseGroups } from '../data';
 import {
   MusicBrainsCoverArtRes, MusicBrainsReleaseGroupRes, MusicBrainsReleasesRes, Song, Release,
 } from '../types';
-import { sortBy, getBaseArtist, getBaseAlbum } from '../utils';
+import {
+  sortBy, getBaseArtist, getBaseAlbum, logError,
+} from '../utils';
 
 export const searchReleaseGroup = async (title:string, artist:string)
 : Promise<MusicBrainsReleaseGroupRes> => {
@@ -19,8 +21,8 @@ export const searchReleaseGroup = async (title:string, artist:string)
   return axios.get(url)
     .then((res) => res.data)
     .catch((e) => {
-      console.log(e);
-      console.log('release group error', url);
+      logError(e);
+      logError(`release group error ${url}`);
     });
 };
 
@@ -33,15 +35,20 @@ export const getReleaseGroupAlbums = async (id:string)
   return axios.get(url)
     .then((res) => res.data.releases)
     .catch((e) => {
-      console.log(e);
-      console.log('release group albums error', url);
+      logError(e);
+      logError(`release group albums error ${url}`);
     });
 };
 
 export const searchReleaseCoverArt = async (id:string) : Promise<MusicBrainsCoverArtRes> => {
   const url = `http://coverartarchive.org/release/${id}-250`;
   return sampleAlbumArt;
-  return axios.get(url).then((res) => res.data);
+  return axios.get(url)
+    .then((res) => res.data)
+    .catch((e) => {
+      logError(e);
+      logError(`get cover art error ${url}`);
+    });
 };
 
 export const getReleaseFromSong = async (song:Song)
@@ -70,6 +77,7 @@ export const getReleaseFromSong = async (song:Song)
 
     return releaseWithArt;
   } catch (e) {
+    logError(e);
     return null;
   }
 };

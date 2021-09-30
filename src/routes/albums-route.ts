@@ -4,6 +4,8 @@ import {
   getBaseArtist, getBaseAlbum, returnResponseSuccess, returnResponseError, returnBadRequest, logError,
 } from '../utils';
 
+require('express-async-errors');
+
 const router = express.Router();
 
 router.get('/search', async (req, res) => {

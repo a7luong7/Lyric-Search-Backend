@@ -29,8 +29,8 @@ export const searchSongs = async (lyrics:string) : Promise<Song[]> => {
     + '&s_track_rating=desc'
     + `&q_lyrics=${encodeURI(lyrics)}`;
 
-  // return axios.get(url).then((res) => convertMusixMatchToSongs(res.data));
   return convertMusixMatchToSongs(sampleSongs);
+  return axios.get(url).then((res) => convertMusixMatchToSongs(res.data));
 };
 
 export const getSongStart = (title:string) : string => {

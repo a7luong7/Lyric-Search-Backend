@@ -16,7 +16,7 @@ export interface ReleaseGroup {
   releases: ReleaseGroupRelease[]
 }
 
-export interface ReleaseGroupArtistCredit {
+interface ReleaseGroupArtistCredit {
   name: string,
   artist: {
     id: string,
@@ -24,7 +24,7 @@ export interface ReleaseGroupArtistCredit {
   }
 }
 
-export interface ReleaseGroupRelease {
+interface ReleaseGroupRelease {
   id: string,
   'status-id': string,
   title: string,
@@ -46,7 +46,7 @@ export interface Release {
   'album_coverart'? : string
 }
 
-export interface ReleaseCoverArtArchive {
+interface ReleaseCoverArtArchive {
   count: number,
   front: boolean,
   back: boolean,

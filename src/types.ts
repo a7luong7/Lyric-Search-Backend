@@ -71,7 +71,7 @@ export interface MusixMatchTrackSearchRes {
   }
 }
 
-export interface MusixMatchTrack {
+interface MusixMatchTrack {
   track: Song
 }
 

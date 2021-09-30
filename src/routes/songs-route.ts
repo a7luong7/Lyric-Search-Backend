@@ -4,7 +4,9 @@ import express from 'express';
 import { searchSongs, filterSongs } from '../service/songs-service';
 import { getReleaseFromSong } from '../service/albums-service';
 import { Song, Release } from '../types';
-import { sortBy, wait } from '../utils';
+import {
+  sortBy, wait, logError, returnResponseError, returnBadRequest, returnResponseSuccess,
+} from '../utils';
 
 const router = express.Router();
 
@@ -28,7 +30,7 @@ const getReleaseFromSongPromise = (songs:Song[], song:Song) : Promise<Release | 
 
 router.get('/search', async (req, res) => {
   const { lyrics } = req.query;
-  if (!lyrics) { return res.status(400).json({ error: 'Please provide lyrics' }); }
+  if (!lyrics) { returnBadRequest(res, 'Please provide both the artist name and album title'); }
 
   try {
     const songSearchRes = await searchSongs(lyrics as string);
@@ -51,15 +53,13 @@ router.get('/search', async (req, res) => {
     await Promise.all(promises);
 
     const sortedSongs = sortBy(songs, 'track_rating', 'desc');
-    return res.status(200).json(sortedSongs);
+    return returnResponseSuccess(res, sortedSongs);
   } catch (e) {
-    console.log('search song error', e);
-    return res.status(500).json({ error: 'Could not search songs' });
+    logError(e);
+    return returnResponseError(res, 'Could not search songs');
   }
 });
 
-router.get('/:id', (req, res) => {
-  res.status(200).json({ error: 'Song get Not yet implemented' });
-});
+router.get('/:id', (req, res) => returnResponseError(res, 'Song get Not yet implemented'));
 
 export default router;

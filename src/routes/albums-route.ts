@@ -1,33 +1,35 @@
 import express from 'express';
-import { searchReleaseGroup, searchAlbumArt } from '../service/albums-service';
+import { searchReleaseGroup, searchReleaseCoverArt } from '../service/albums-service';
+import {
+  getBaseArtist, getBaseAlbum, returnResponseSuccess, returnResponseError, returnBadRequest, logError,
+} from '../utils';
 
 const router = express.Router();
 
 router.get('/search', async (req, res) => {
-  let artist = req.query.artist as string;
-  let albumTitle = req.query.albumTitle as string;
-  if (!artist || !albumTitle) { return res.status(400).json({ error: 'Please provide both the artist name and album title' }); }
+  if (!req.query.artist || !req.query.albumTitle) {
+    return returnBadRequest(res, 'Please provide both the artist name and album title');
+  }
 
-  if (artist.includes('feat.')) { artist = artist.substring(0, artist.indexOf('feat.')); }
-  if (albumTitle.includes('(')) { albumTitle = albumTitle.substring(0, albumTitle.indexOf('(')); }
-  if (albumTitle.endsWith('- Single')) { albumTitle = albumTitle.substring(0, albumTitle.indexOf('- Single')); }
-
-  console.log('artist', artist);
-  console.log('albim title', albumTitle);
+  const artist = getBaseArtist(req.query.artist as string);
+  const albumTitle = getBaseAlbum(req.query.albumTitle as string);
 
   try {
     const releaseGroupsRes = await searchReleaseGroup(albumTitle as string, artist as string);
-    if (releaseGroupsRes.count === 0 || !releaseGroupsRes['release-groups']) { return res.status(200).json({ }); }
-    const album = releaseGroupsRes['release-groups'][0];
-
-    const albumArtRes = await searchAlbumArt(album.id as string);
-    if (albumArtRes.images.length !== 0) {
-      // album.album_coverart = albumArtRes.images[0].thumbnails.small;
+    if (releaseGroupsRes.count === 0 || !releaseGroupsRes['release-groups']) {
+      return res.status(404).json({ error: 'Release not found' });
     }
-    return res.status(200).json(album);
+    const releaseGroup = releaseGroupsRes['release-groups'][0];
+    const release = releaseGroup.releases[0];
+
+    const coverArtRes = await searchReleaseCoverArt(release.id as string);
+    if (coverArtRes.images.length !== 0) {
+      // release.album_coverart = coverArtRes.images[0].thumbnails.small;
+    }
+    return returnResponseSuccess(res, release);
   } catch (e) {
-    // console.log('error', e);
-    return res.status(200).json({ });
+    logError(e);
+    return returnResponseError(res, 'Error occurred searching for album');
   }
 });
 

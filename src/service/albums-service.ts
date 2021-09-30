@@ -3,7 +3,7 @@ import { sampleAlbumArt, sampleReleases, sampleReleaseGroups } from '../data';
 import {
   MusicBrainsCoverArtRes, MusicBrainsReleaseGroupRes, MusicBrainsReleasesRes, Song, Release,
 } from '../types';
-import { sortBy } from '../utils';
+import { sortBy, getBaseArtist, getBaseAlbum } from '../utils';
 
 export const searchReleaseGroup = async (title:string, artist:string)
 : Promise<MusicBrainsReleaseGroupRes> => {
@@ -47,13 +47,8 @@ export const searchReleaseCoverArt = async (id:string) : Promise<MusicBrainsCove
 export const getReleaseFromSong = async (song:Song)
 : Promise<Release | null> => {
   try {
-    let artist = song.artist_name;
-    let albumTitle = song.album_name;
-    if (artist.includes('feat.')) { artist = artist.substring(0, artist.indexOf('feat.')).trim(); }
-    if (albumTitle.includes('(')) { albumTitle = albumTitle.substring(0, albumTitle.indexOf('(')).trim(); }
-    if (albumTitle.endsWith('- Single')) { albumTitle = albumTitle.substring(0, albumTitle.indexOf('- Single')).trim(); }
-    if (albumTitle.endsWith('- Side A')) { albumTitle = albumTitle.substring(0, albumTitle.indexOf('- Side A')).trim(); }
-    if (albumTitle.endsWith('- Side B')) { albumTitle = albumTitle.substring(0, albumTitle.indexOf('- Side B')).trim(); }
+    const artist = getBaseArtist(song.artist_name);
+    const albumTitle = getBaseAlbum(song.album_name);
 
     const releaseGroupRes = await searchReleaseGroup(albumTitle, artist);
     if (releaseGroupRes.count === 0 || !releaseGroupRes['release-groups']) { return null; }

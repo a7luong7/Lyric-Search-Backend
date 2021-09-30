@@ -1,10 +1,7 @@
 import axios from 'axios';
+import { sampleAlbumArt, sampleReleases, sampleReleaseGroups } from '../data';
 import {
-  sampleAlbumArt, sampleAlbums, sampleReleases, sampleReleaseGroups,
-} from '../data';
-import {
-  AlbumRes, AlbumArtRes, AlbumReleases, Song, Album, MusicBrainsReleaseGroupRes,
-  MusicBrainsReleasesRes, Release,
+  MusicBrainsCoverArtRes, MusicBrainsReleaseGroupRes, MusicBrainsReleasesRes, Song, Release,
 } from '../types';
 import { sortBy } from '../utils';
 
@@ -12,7 +9,11 @@ export const searchReleaseGroup = async (title:string, artist:string)
 : Promise<MusicBrainsReleaseGroupRes> => {
   const limit = 1;
   const baseUrl = 'https://musicbrainz.org/ws/2/release-group';
-  const url = `${baseUrl}?query=release:${encodeURI(title)} AND artist:${encodeURI(artist)}&limit=${limit}&fmt=json`;
+  const url = `${baseUrl}`
+  + `?query=release:${encodeURI(title)} `
+  + `AND artist:${encodeURI(artist)}`
+  + `&limit=${limit}`
+  + '&fmt=json';
 
   return sampleReleaseGroups;
   return axios.get(url)
@@ -37,13 +38,13 @@ export const getReleaseGroupAlbums = async (id:string)
     });
 };
 
-export const searchAlbumArt = async (id:string) : Promise<AlbumArtRes> => {
+export const searchReleaseCoverArt = async (id:string) : Promise<MusicBrainsCoverArtRes> => {
   const url = `http://coverartarchive.org/release/${id}-250`;
-  // return sampleAlbumArt;
+  return sampleAlbumArt;
   return axios.get(url).then((res) => res.data);
 };
 
-export const getAlbumFromSong = async (song:Song)
+export const getReleaseFromSong = async (song:Song)
 : Promise<Release | null> => {
   try {
     let artist = song.artist_name;

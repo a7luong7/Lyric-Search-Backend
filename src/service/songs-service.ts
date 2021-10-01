@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { sampleSearchResults, sampleLyrics } from '../data';
+import { sampleSearchResults, sampleLyricsRaw } from '../data';
 import { Song, MusixMatchLyricsRes } from '../types';
 import { GENIUS_API_KEY } from '../config';
 
@@ -59,7 +59,7 @@ const parseLyricsFromGeniusHTML = (html:string) : string => {
 export const getSongLyrics = async (lyricsPath:string) : Promise<string> => {
   const baseUrl = 'https://genius.com';
   const url = `${baseUrl}/${lyricsPath}`;
-
+  return parseLyricsFromGeniusHTML(sampleLyricsRaw);
   return axios.get(url).then((result) => parseLyricsFromGeniusHTML(result.data));
 };
 

@@ -1,5 +1,6 @@
 import sampleSongs from './sample-songs';
 import sampleLyrics from './sample-lyrics';
+import sampleLyricsRaw from './sample-lyrics-raw';
 import sampleAlbums from './sample-albums';
 import sampleAlbumArt from './sample-album-art';
 import sampleReleases from './sample-releases';
@@ -9,6 +10,7 @@ import sampleSearchResults from './sample-search-results';
 export {
   sampleSongs,
   sampleLyrics,
+  sampleLyricsRaw,
   sampleAlbums,
   sampleAlbumArt,
   sampleReleases,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-await-in-loop */
 import express from 'express';
@@ -69,7 +70,11 @@ router.get('/lyrics', async (req:express.Request, res:express.Response) => {
   if (!lyricsPath) { return returnBadRequest(res, 'Please provide path to lyrics'); }
 
   const lyrics = await getSongLyrics(lyricsPath as string);
-  if (lyrics) { return returnResponseSuccess(res, lyrics); }
+  if (lyrics) {
+    const lyricsJson = { lyrics };
+    return returnResponseSuccess(res, lyricsJson);
+  }
+
   return returnResponseError(req, 'Could not get lyrics');
 });
 

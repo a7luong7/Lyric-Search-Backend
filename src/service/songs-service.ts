@@ -30,6 +30,7 @@ export const convertGeniusSearchResToSongs = (data:any) : Song[] => {
     return {
       id: song.id,
       api_path: song.api_path,
+      path: song.path,
       full_title: song.full_title,
       title: song.title,
       title_with_featured: song.title_with_featured,

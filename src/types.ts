@@ -66,6 +66,7 @@ interface ReleaseCoverArtArchive {
 export interface Song {
   id: number,
   api_path: string,
+  path: string,
   full_title: string,
   title: string,
   title_with_featured: string,

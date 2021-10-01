@@ -7,7 +7,9 @@ import { Song, Release } from '../types';
 import {
   sortBy, wait, logError, returnResponseError, returnBadRequest, returnResponseSuccess,
 } from '../utils';
+import axios from 'axios';
 
+const cheerio = require('cheerio');
 require('express-async-errors');
 
 const router = express.Router();
@@ -29,6 +31,27 @@ const router = express.Router();
 //   });
 //   return promise;
 // };
+
+router.get('/scrape', async (req, res) => {
+  const url = 'https://genius.com/Kanye-west-remote-control-lyrics';
+  axios.get(url).then((result) => {
+    const $ = cheerio.load(result.data);
+
+    let lyrics = '';
+    $('#lyrics-root div[class^="Lyrics__Container"]').each((i:number, elem:any) => {
+      $(elem).find('a').each((j:number, link:any) => {
+        $(link).replaceWith($(link).html());
+      });
+      $(elem).find('span').each((j:number, span:any) => {
+        $(span).replaceWith($(span).html());
+      });
+
+      lyrics += $(elem).html();
+      lyrics += '<br/>';
+    });
+    res.status(200).send(lyrics);
+  });
+});
 
 router.get('/search', async (req, res) => {
   const { lyrics } = req.query;

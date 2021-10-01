@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(cors());
 }
 
-app.use('/api/songs', songsRouter);
+app.use('/api/', songsRouter);
 app.use('/api/albums', albumsRouter);
 
 // 404 catchall

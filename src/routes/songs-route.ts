@@ -7,9 +7,7 @@ import { Song, Release } from '../types';
 import {
   sortBy, wait, logError, returnResponseError, returnBadRequest, returnResponseSuccess,
 } from '../utils';
-import axios from 'axios';
 
-const cheerio = require('cheerio');
 require('express-async-errors');
 
 const router = express.Router();
@@ -31,27 +29,6 @@ const router = express.Router();
 //   });
 //   return promise;
 // };
-
-router.get('/scrape', async (req, res) => {
-  const url = 'https://genius.com/Kanye-west-remote-control-lyrics';
-  axios.get(url).then((result) => {
-    const $ = cheerio.load(result.data);
-
-    let lyrics = '';
-    $('#lyrics-root div[class^="Lyrics__Container"]').each((i:number, elem:any) => {
-      $(elem).find('a').each((j:number, link:any) => {
-        $(link).replaceWith($(link).html());
-      });
-      $(elem).find('span').each((j:number, span:any) => {
-        $(span).replaceWith($(span).html());
-      });
-
-      lyrics += $(elem).html();
-      lyrics += '<br/>';
-    });
-    res.status(200).send(lyrics);
-  });
-});
 
 router.get('/search', async (req, res) => {
   const { lyrics } = req.query;
@@ -87,17 +64,15 @@ router.get('/search', async (req, res) => {
   }
 });
 
-router.get('/:id/lyrics', async (req:express.Request, res:express.Response) => {
-  const trackID = req.params.id;
-  if (!trackID) { return returnBadRequest(res, 'Please a valid trackID'); }
-  const trackIDNum = Number(trackID) as number;
-  if (Number.isNaN(trackIDNum)) { return returnBadRequest(res, 'Please a valid trackID'); }
+router.get('/lyrics', async (req:express.Request, res:express.Response) => {
+  const lyricsPath = req.query.path;
+  if (!lyricsPath) { return returnBadRequest(res, 'Please provide path to lyrics'); }
 
-  const lyrics = await getSongLyrics(trackIDNum);
+  const lyrics = await getSongLyrics(lyricsPath as string);
   if (lyrics) { return returnResponseSuccess(res, lyrics); }
   return returnResponseError(req, 'Could not get lyrics');
 });
 
-router.get('/:id', (req:express.Request, res:express.Response) => returnResponseError(res, 'Song get Not yet implemented'));
+router.get('/songs/:id', (req:express.Request, res:express.Response) => returnResponseError(res, 'Song get Not yet implemented'));
 
 export default router;

@@ -20,7 +20,7 @@ app.get('*', (req, res) => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error:Error, req:express.Request, res:express.Response, next:Function) => {
-  console.log(`Unhandled exception at: ${req.path}`, error);
+  console.log(`Unhandled exception at: ${req.path}`);
   if (process.env.NODE_ENV !== 'production') {
     return res.status(500).send(error);
   }

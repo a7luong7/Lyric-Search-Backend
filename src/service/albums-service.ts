@@ -54,8 +54,9 @@ export const searchReleaseCoverArt = async (id:string) : Promise<MusicBrainsCove
 export const getReleaseFromSong = async (song:Song)
 : Promise<Release | null> => {
   try {
-    const artist = getBaseArtist(song.artist_name);
-    const albumTitle = getBaseAlbum(song.album_name);
+    const artist = getBaseArtist(song.artist);
+    const albumTitle = '';
+    // const albumTitle = getBaseAlbum(song.);
 
     const releaseGroupRes = await searchReleaseGroup(albumTitle, artist);
     if (releaseGroupRes.count === 0 || !releaseGroupRes['release-groups']) { return null; }

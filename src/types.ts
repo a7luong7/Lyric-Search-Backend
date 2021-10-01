@@ -53,14 +53,29 @@ interface ReleaseCoverArtArchive {
   artwork: boolean
 }
 
+// export interface Song {
+//   track_id: number,
+//   track_name: string,
+//   track_rating: number,
+//   album_id: number,
+//   album_name: string,
+//   album_coverart?: string,
+//   artist_name: string
+// }
+
 export interface Song {
-  track_id: number,
-  track_name: string,
-  track_rating: number,
-  album_id: number,
-  album_name: string,
-  album_coverart?: string,
-  artist_name: string
+  id: number,
+  api_path: string,
+  full_title: string,
+  title: string,
+  title_with_featured: string,
+  artist: string,
+  lyrics_state: string,
+  lyrics_owner_id?: number,
+  song_art_image_url?: string,
+  song_art_image_thumbnail_url?: string,
+  header_image_url?: string,
+  header_image_thumbnail_url?: string,
 }
 
 export interface MusixMatchTrackSearchRes {

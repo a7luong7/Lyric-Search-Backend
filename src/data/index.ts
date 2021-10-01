@@ -4,6 +4,7 @@ import sampleAlbums from './sample-albums';
 import sampleAlbumArt from './sample-album-art';
 import sampleReleases from './sample-releases';
 import sampleReleaseGroups from './sample-release-groups';
+import sampleSearchResults from './sample-search-results';
 
 export {
   sampleSongs,
@@ -12,4 +13,5 @@ export {
   sampleAlbumArt,
   sampleReleases,
   sampleReleaseGroups,
+  sampleSearchResults,
 };

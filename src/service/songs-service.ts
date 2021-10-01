@@ -9,7 +9,7 @@ const cheerio = require('cheerio');
 // Use default img thumbnail if url is not hosted on genius.com assets
 const getThumbOrDefault = (url:string) : string => {
   if (!url) { return url; }
-  if (!url.startsWith('https://assets.genius.com')) {
+  if (!url.startsWith('https://images.genius.com') && !url.startsWith('https://assets.genius.com')) {
     return 'https://assets.genius.com/images/default_cover_image.png?1633111074';
   }
   return url;

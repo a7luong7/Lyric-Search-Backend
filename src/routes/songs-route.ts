@@ -34,10 +34,6 @@ router.get('/search', async (req, res) => {
   const { lyrics } = req.query;
   if (!lyrics) { return returnBadRequest(res, 'Please provide both the artist name and album title'); }
 
-  const songgg = 0;
-  const sg = 3 / songgg;
-  throw new Error('asdsdd');
-
   try {
     const songSearchRes = await searchSongs(lyrics as string);
     const filteredSongs = filterSongs(songSearchRes);
@@ -66,6 +62,6 @@ router.get('/search', async (req, res) => {
   }
 });
 
-router.get('/:id', (req, res) => returnResponseError(res, 'Song get Not yet implemented'));
+router.get('/:id', (req:express.Request, res:express.Response) => returnResponseError(res, 'Song get Not yet implemented'));
 
 export default router;

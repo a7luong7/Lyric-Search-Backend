@@ -18,21 +18,13 @@ app.get('*', (req, res) => {
   res.status(404).json({ error: 'Invalid route' });
 });
 
-app.get('/sync-test', async (req:any, res:any) => {
-  throw new Error('Error from synchronous code!');
-});
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((error:Error, req:express.Request, res:express.Response, next:Function) => {
-  console.log('Unhandled exception');
-  //   console.log('Path: ', req.path);
-  //   console.error('Error: ', error);
-
+  console.log(`Unhandled exception at: ${req.path}`, error);
   if (process.env.NODE_ENV !== 'production') {
     return res.status(500).send(error);
   }
   return res.status(500).json({ error: 'Internal server error' });
-
   next(error);
 });
 

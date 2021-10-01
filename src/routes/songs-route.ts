@@ -1,7 +1,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-await-in-loop */
 import express from 'express';
-import { searchSongs, filterSongs } from '../service/songs-service';
+import { searchSongs, filterSongs, getSongLyrics } from '../service/songs-service';
 import { getReleaseFromSong } from '../service/albums-service';
 import { Song, Release } from '../types';
 import {
@@ -60,6 +60,17 @@ router.get('/search', async (req, res) => {
     logError(e);
     return returnResponseError(res, 'Could not search songs');
   }
+});
+
+router.get('/:id/lyrics', async (req:express.Request, res:express.Response) => {
+  const trackID = req.params.id;
+  if (!trackID) { return returnBadRequest(res, 'Please a valid trackID'); }
+  const trackIDNum = Number(trackID) as number;
+  if (Number.isNaN(trackIDNum)) { return returnBadRequest(res, 'Please a valid trackID'); }
+
+  const lyrics = await getSongLyrics(trackIDNum);
+  if (lyrics) { return returnResponseSuccess(res, lyrics); }
+  return returnResponseError(req, 'Could not get lyrics');
 });
 
 router.get('/:id', (req:express.Request, res:express.Response) => returnResponseError(res, 'Song get Not yet implemented'));

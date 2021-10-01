@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { sampleSongs } from '../data';
-import { Song, MusixMatchTrackSearchRes } from '../types';
+import { sampleSongs, sampleLyrics } from '../data';
+import { Song, MusixMatchTrackSearchRes, MusixMatchLyricsRes } from '../types';
 import { MUSIXMATCH_API_KEY } from '../config';
 
 export const convertMusixMatchToSongs = (data:MusixMatchTrackSearchRes) : Song[] => {
@@ -21,11 +21,10 @@ export const convertMusixMatchToSongs = (data:MusixMatchTrackSearchRes) : Song[]
 
 export const searchSongs = async (lyrics:string) : Promise<Song[]> => {
   const page = 1;
-  const apiKey = MUSIXMATCH_API_KEY;
   const baseUrl = 'https://api.musixmatch.com/ws/1.1/track.search';
   const url = `${baseUrl}`
     + `?page=${page}`
-    + `&apikey=${apiKey}`
+    + `&apikey=${MUSIXMATCH_API_KEY}`
     + '&s_track_rating=desc'
     + `&q_lyrics=${encodeURI(lyrics)}`;
 
@@ -65,6 +64,16 @@ export const filterSongs = (songs:Song[]) : Song[] => {
     }
   });
   return filteredSongs;
+};
+
+export const getSongLyrics = async (trackID:number) : Promise<MusixMatchLyricsRes> => {
+  const baseUrl = 'https://api.musixmatch.com/ws/1.1/track.lyrics.get';
+  const url = `${baseUrl}`
+    + `?track_id=${trackID}`
+    + `&apikey=${MUSIXMATCH_API_KEY}`;
+
+  return sampleLyrics;
+  return axios.get(url).then((res) => res.data);
 };
 
 export default {};

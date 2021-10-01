@@ -61,8 +61,11 @@ const parseLyricsFromGeniusHTML = (html:string) : string => {
     $(elem).find('a').each((j:number, link:any) => $(link).replaceWith($(link).html()));
     $(elem).find('span').each((j:number, span:any) => $(span).replaceWith($(span).html()));
     $(elem).find('span').each((j:number, span:any) => $(span).replaceWith($(span).html()));
+
+    $(elem).find('i').each((j:number, span:any) => $(span).replaceWith($(span).text()));
+    $(elem).find('b').each((j:number, span:any) => $(span).replaceWith($(span).text()));
     lyrics += $(elem).html();
-    lyrics += '<br/>';
+    lyrics += '<br>';
   });
   return lyrics;
 };

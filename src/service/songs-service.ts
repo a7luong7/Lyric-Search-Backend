@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { sampleSearchResults, sampleLyricsRaw } from '../data';
-import { Song, MusixMatchLyricsRes } from '../types';
+import { sampleSearchResults, sampleLyricsResults, sampleLyricsRaw } from '../data';
+import { Song, SongWithLyricsHighlight, MusixMatchLyricsRes } from '../types';
 import { GENIUS_API_KEY } from '../config';
 
 const cheerio = require('cheerio');
@@ -13,6 +13,34 @@ const getThumbOrDefault = (url:string) : string => {
     return 'https://assets.genius.com/images/default_cover_image.png?1633111074';
   }
   return url;
+};
+
+export const convertGeniusLyricSearchResToSongs = (data: any) : SongWithLyricsHighlight[] => {
+  if (!data || !data.meta || data.meta.status !== 200) { return []; }
+
+  const lyricSection = data.response.sections.find((x:any) => x.type === 'lyric');
+  if (!lyricSection || lyricSection.hits === 0) { return []; }
+
+  const songs = lyricSection.hits.map((hit:any) => {
+    const song = hit.result;
+    return {
+      id: song.id,
+      api_path: song.api_path,
+      path: song.path,
+      full_title: song.full_title,
+      title: song.title,
+      title_with_featured: song.title_with_featured,
+      artist: song.primary_artist.name,
+      lyrics_state: song.lyrics_state,
+      lyrics_owner_id: song.lyrics_owner_id,
+      song_art_image_url: getThumbOrDefault(song.song_art_image_url),
+      song_art_image_thumbnail_url: getThumbOrDefault(song.song_art_image_thumbnail_url),
+      header_image_url: getThumbOrDefault(song.header_image_url),
+      header_image_thumbnail_url: getThumbOrDefault(song.header_image_thumbnail_url),
+      highlights: hit.highlights,
+    };
+  });
+  return songs;
 };
 
 export const convertGeniusSearchResToSongs = (data:any) : Song[] => {
@@ -49,8 +77,19 @@ export const searchSongs = async (lyrics:string) : Promise<Song[]> => {
   const config = {
     headers: { Authorization: `Bearer ${GENIUS_API_KEY}` },
   };
-  // return convertGeniusSearchResToSongs(sampleSearchResults);
+  return convertGeniusSearchResToSongs(sampleSearchResults);
   return axios.get(url, config).then((res) => convertGeniusSearchResToSongs(res.data));
+};
+
+export const searchSongsWithLyrics = async (lyrics:string, page:number)
+: Promise<SongWithLyricsHighlight[]> => {
+  const baseUrl = 'https://api.genius.com/search/lyric';
+  const url = `${baseUrl}?q=${encodeURI(lyrics)}&page=${page}`;
+  const config = {
+    headers: { Authorization: `Bearer ${GENIUS_API_KEY}` },
+  };
+  return convertGeniusLyricSearchResToSongs(sampleLyricsResults);
+  return axios.get(url, config).then((res) => convertGeniusLyricSearchResToSongs(res.data));
 };
 
 const parseLyricsFromGeniusHTML = (html:string) : string => {
@@ -73,7 +112,7 @@ const parseLyricsFromGeniusHTML = (html:string) : string => {
 export const getSongLyrics = async (lyricsPath:string) : Promise<string> => {
   const baseUrl = 'https://genius.com';
   const url = `${baseUrl}${lyricsPath}`;
-  // return parseLyricsFromGeniusHTML(sampleLyricsRaw);
+  return parseLyricsFromGeniusHTML(sampleLyricsRaw);
   return axios.get(url).then((result) => parseLyricsFromGeniusHTML(result.data));
 };
 

@@ -2,7 +2,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-await-in-loop */
 import express from 'express';
-import { searchSongs, getSongLyrics } from '../service/songs-service';
+import { searchSongs, searchSongsWithLyrics, getSongLyrics } from '../service/songs-service';
 import { } from '../service/albums-service';
 import { Song, Release } from '../types';
 import {
@@ -34,9 +34,11 @@ const router = express.Router();
 router.get('/search', async (req, res) => {
   const { lyrics } = req.query;
   if (!lyrics) { return returnBadRequest(res, 'Please provide both the artist name and album title'); }
+  const pageNum = Number(req.query.page);
+  const page = Number.isNaN(pageNum) ? 1 : pageNum;
 
   try {
-    const songSearchRes = await searchSongs(lyrics as string);
+    const songSearchRes = await searchSongsWithLyrics(lyrics as string, page);
     return returnResponseSuccess(res, songSearchRes); // Premature return for resting
 
     // const filteredSongs = filterSongs(songSearchRes);

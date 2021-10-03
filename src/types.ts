@@ -53,16 +53,6 @@ interface ReleaseCoverArtArchive {
   artwork: boolean
 }
 
-// export interface Song {
-//   track_id: number,
-//   track_name: string,
-//   track_rating: number,
-//   album_id: number,
-//   album_name: string,
-//   album_coverart?: string,
-//   artist_name: string
-// }
-
 export interface Song {
   id: number,
   api_path: string,
@@ -77,6 +67,20 @@ export interface Song {
   song_art_image_thumbnail_url?: string,
   header_image_url?: string,
   header_image_thumbnail_url?: string,
+}
+
+export interface LyricsHighlight {
+  property: string,
+  value: string,
+  snippet: boolean,
+  ranges: [{
+    start: number,
+    end: number
+  }]
+}
+
+export interface SongWithLyricsHighlight extends Song{
+  highlights?: LyricsHighlight[]
 }
 
 export interface MusixMatchTrackSearchRes {
@@ -121,3 +125,24 @@ export interface Lyrics {
   lyrics_copyright: string,
   updated_time: string
 }
+
+// export interface GeniusLyricSearchRes {
+//   meta: {
+//     status: number
+//   },
+//   response: {
+//     sections: GeniusLyricSearchSection[],
+//     next_page: number | null
+//   }
+// }
+
+// export interface GeniusLyricSearchSection {
+//   type: string,
+//   hits: LyricSearchHits[]
+// }
+
+// export interface LyricSearchHits {
+//   type: string,
+//   index: string,
+//   highlights: LyricSearchHighlight[]
+// }

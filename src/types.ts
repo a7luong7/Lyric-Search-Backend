@@ -53,6 +53,11 @@ interface ReleaseCoverArtArchive {
   artwork: boolean
 }
 
+export interface SongSearchResponse {
+  songs: SongWithLyricsHighlight[],
+  nextPage: number | null
+}
+
 export interface Song {
   id: number,
   api_path: string,

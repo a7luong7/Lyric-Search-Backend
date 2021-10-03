@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { sampleSearchResults, sampleLyricsResults, sampleLyricsRaw } from '../data';
-import { Song, SongWithLyricsHighlight, MusixMatchLyricsRes } from '../types';
+import { Song, SongWithLyricsHighlight, SongSearchResponse } from '../types';
 import { GENIUS_API_KEY } from '../config';
 
 const cheerio = require('cheerio');
@@ -15,11 +15,16 @@ const getThumbOrDefault = (url:string) : string => {
   return url;
 };
 
-export const convertGeniusLyricSearchResToSongs = (data: any) : SongWithLyricsHighlight[] => {
-  if (!data || !data.meta || data.meta.status !== 200) { return []; }
+export const convertGeniusLyricSearchResToSongs = (data: any) : SongSearchResponse | null => {
+  if (!data || !data.meta || data.meta.status !== 200) { return null; }
 
   const lyricSection = data.response.sections.find((x:any) => x.type === 'lyric');
-  if (!lyricSection || lyricSection.hits === 0) { return []; }
+  if (!lyricSection || lyricSection.hits === 0) {
+    return <SongSearchResponse>{
+      songs: [],
+      nextPage: null,
+    };
+  }
 
   const songs = lyricSection.hits.map((hit:any) => {
     const song = hit.result;
@@ -40,7 +45,13 @@ export const convertGeniusLyricSearchResToSongs = (data: any) : SongWithLyricsHi
       highlights: hit.highlights,
     };
   });
-  return songs;
+
+  const response = <SongSearchResponse>{
+    songs,
+    nextPage: data.response.next_page,
+  };
+
+  return response;
 };
 
 export const convertGeniusSearchResToSongs = (data:any) : Song[] => {
@@ -71,7 +82,6 @@ export const convertGeniusSearchResToSongs = (data:any) : Song[] => {
 };
 
 export const searchSongs = async (lyrics:string) : Promise<Song[]> => {
-  const page = 1;
   const baseUrl = 'https://api.genius.com/search';
   const url = `${baseUrl}?q=${encodeURI(lyrics)}`;
   const config = {
@@ -82,7 +92,7 @@ export const searchSongs = async (lyrics:string) : Promise<Song[]> => {
 };
 
 export const searchSongsWithLyrics = async (lyrics:string, page:number)
-: Promise<SongWithLyricsHighlight[]> => {
+: Promise<SongSearchResponse | null> => {
   const baseUrl = 'https://api.genius.com/search/lyric';
   const url = `${baseUrl}?q=${encodeURI(lyrics)}&page=${page}`;
   const config = {

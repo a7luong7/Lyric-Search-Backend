@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { songsRouter, albumsRouter } from './routes';
+import { songsRouter, albumsRouter, youtubeRouter } from './routes';
 
 require('express-async-errors');
 
@@ -12,6 +12,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use('/api/', songsRouter);
 app.use('/api/albums', albumsRouter);
+app.use('/api/videos', youtubeRouter);
 
 // 404 catchall
 app.get('*', (req, res) => {

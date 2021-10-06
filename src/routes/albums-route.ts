@@ -9,7 +9,7 @@ require('express-async-errors');
 
 const router = express.Router();
 
-router.get('/search', async (req:express.Request, res:express.Response) => {
+router.get('/', async (req:express.Request, res:express.Response) => {
   if (!req.query.artist || !req.query.albumTitle) {
     return returnBadRequest(res, 'Please provide both the artist name and album title');
   }

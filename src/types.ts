@@ -131,6 +131,19 @@ export interface Lyrics {
   updated_time: string
 }
 
+export interface YoutubeSearchResult {
+  videoID: string,
+  channelID: string,
+  title: string,
+  description: string,
+  publishedAt: string,
+  thumbnails: {
+    default: string,
+    medium: string,
+    high: string
+  }
+}
+
 // export interface GeniusLyricSearchRes {
 //   meta: {
 //     status: number

@@ -4,7 +4,7 @@ import {
   MusicBrainsCoverArtRes, MusicBrainsReleaseGroupRes, MusicBrainsReleasesRes, Song, Release,
 } from '../types';
 import {
-  sortBy, getBaseArtist, getBaseAlbum, logError,
+  sortBy, getBaseArtist, logError,
 } from '../utils';
 
 export const searchReleaseGroup = async (title:string, artist:string)

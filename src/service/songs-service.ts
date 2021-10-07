@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { sampleSearchResults, sampleLyricsResults, sampleLyricsRaw } from '../data';
+import {
+  sampleSearchResults, sampleLyricsResults, sampleLyricsRaw, sampleSong,
+} from '../data';
 import { Song, SongWithLyricsHighlight, SongSearchResponse } from '../types';
 import { GENIUS_API_KEY } from '../config';
 
@@ -15,6 +17,22 @@ const getThumbOrDefault = (url:string) : string => {
   return url;
 };
 
+const convertSongResult = (song:any) : Song => ({
+  id: song.id,
+  api_path: song.api_path,
+  path: song.path,
+  full_title: song.full_title,
+  title: song.title,
+  title_with_featured: song.title_with_featured,
+  artist: song.primary_artist.name,
+  lyrics_state: song.lyrics_state,
+  lyrics_owner_id: song.lyrics_owner_id,
+  song_art_image_url: getThumbOrDefault(song.song_art_image_url),
+  song_art_image_thumbnail_url: getThumbOrDefault(song.song_art_image_thumbnail_url),
+  header_image_url: getThumbOrDefault(song.header_image_url),
+  header_image_thumbnail_url: getThumbOrDefault(song.header_image_thumbnail_url),
+});
+
 export const convertGeniusLyricSearchResToSongs = (data: any) : SongSearchResponse | null => {
   if (!data || !data.meta || data.meta.status !== 200) { return null; }
 
@@ -28,20 +46,9 @@ export const convertGeniusLyricSearchResToSongs = (data: any) : SongSearchRespon
 
   const songs = lyricSection.hits.map((hit:any) => {
     const song = hit.result;
+    const convertedSong = convertSongResult(song);
     return {
-      id: song.id,
-      api_path: song.api_path,
-      path: song.path,
-      full_title: song.full_title,
-      title: song.title,
-      title_with_featured: song.title_with_featured,
-      artist: song.primary_artist.name,
-      lyrics_state: song.lyrics_state,
-      lyrics_owner_id: song.lyrics_owner_id,
-      song_art_image_url: getThumbOrDefault(song.song_art_image_url),
-      song_art_image_thumbnail_url: getThumbOrDefault(song.song_art_image_thumbnail_url),
-      header_image_url: getThumbOrDefault(song.header_image_url),
-      header_image_thumbnail_url: getThumbOrDefault(song.header_image_thumbnail_url),
+      ...convertedSong,
       highlights: hit.highlights,
     };
   });
@@ -62,23 +69,22 @@ export const convertGeniusSearchResToSongs = (data:any) : Song[] => {
   // eslint-disable-next-line arrow-body-style
   const songs = songResults.map((hit:any) => {
     const song = hit.result;
-    return {
-      id: song.id,
-      api_path: song.api_path,
-      path: song.path,
-      full_title: song.full_title,
-      title: song.title,
-      title_with_featured: song.title_with_featured,
-      artist: song.primary_artist.name,
-      lyrics_state: song.lyrics_state,
-      lyrics_owner_id: song.lyrics_owner_id,
-      song_art_image_url: getThumbOrDefault(song.song_art_image_url),
-      song_art_image_thumbnail_url: getThumbOrDefault(song.song_art_image_thumbnail_url),
-      header_image_url: getThumbOrDefault(song.header_image_url),
-      header_image_thumbnail_url: getThumbOrDefault(song.header_image_thumbnail_url),
-    };
+    return convertSongResult(song);
   });
   return songs;
+};
+
+export const getSong = async (id:number) => {
+  const baseUrl = 'https://genius.com/api/songs';
+  const url = `${baseUrl}/${id}`;
+  const config = {
+    headers: { Authorization: `Bearer ${GENIUS_API_KEY}` },
+  };
+  return sampleSong;
+  const result = await axios.get(url, config);
+  const { song } = result.data.response;
+  return song;
+  return axios.get(url, config).then((res) => (res.data));
 };
 
 export const searchSongs = async (lyrics:string) : Promise<Song[]> => {
@@ -87,19 +93,16 @@ export const searchSongs = async (lyrics:string) : Promise<Song[]> => {
   const config = {
     headers: { Authorization: `Bearer ${GENIUS_API_KEY}` },
   };
-  return convertGeniusSearchResToSongs(sampleSearchResults);
+  // return convertGeniusSearchResToSongs(sampleSearchResults);
   return axios.get(url, config).then((res) => convertGeniusSearchResToSongs(res.data));
 };
 
 export const searchSongsWithLyrics = async (lyrics:string, page:number)
 : Promise<SongSearchResponse | null> => {
-  const baseUrl = 'https://api.genius.com/search/lyric';
+  const baseUrl = 'https://genius.com/api/search/lyric';
   const url = `${baseUrl}?q=${encodeURI(lyrics)}&page=${page}`;
-  const config = {
-    headers: { Authorization: `Bearer ${GENIUS_API_KEY}` },
-  };
   return convertGeniusLyricSearchResToSongs(sampleLyricsResults);
-  return axios.get(url, config).then((res) => convertGeniusLyricSearchResToSongs(res.data));
+  return axios.get(url).then((res) => convertGeniusLyricSearchResToSongs(res.data));
 };
 
 const parseLyricsFromGeniusHTML = (html:string) : string => {

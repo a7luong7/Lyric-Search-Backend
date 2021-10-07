@@ -1,4 +1,5 @@
 import sampleSongs from './sample-songs';
+import sampleSong from './sample-song';
 import sampleLyrics from './sample-lyrics';
 import sampleLyricsRaw from './sample-lyrics-raw';
 import sampleLyricsResults from './sample-lyrics-results';
@@ -11,6 +12,7 @@ import sampleYoutubeResults from './sample-youtube-results';
 
 export {
   sampleSongs,
+  sampleSong,
   sampleLyrics,
   sampleLyricsRaw,
   sampleLyricsResults,

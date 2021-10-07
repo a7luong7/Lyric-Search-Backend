@@ -1,5 +1,5 @@
 import express from 'express';
-import { searchSongsWithLyrics, getSongLyrics } from '../service/songs-service';
+import { searchSongsWithLyrics, getSong, getSongLyrics } from '../service/songs-service';
 import {
   logError, returnResponseError, returnBadRequest, returnResponseSuccess,
 } from '../utils';
@@ -23,7 +23,7 @@ router.get('/search', async (req, res) => {
   }
 });
 
-router.get('/lyrics', async (req:express.Request, res:express.Response) => {
+router.get('/lyrics', async (req: express.Request, res: express.Response) => {
   const lyricsPath = req.query.path;
   if (!lyricsPath) { return returnBadRequest(res, 'Please provide path to lyrics'); }
 
@@ -36,6 +36,13 @@ router.get('/lyrics', async (req:express.Request, res:express.Response) => {
   return returnResponseError(req, 'Could not get lyrics');
 });
 
-router.get('/songs/:id', (req:express.Request, res:express.Response) => returnResponseError(res, 'Song get Not yet implemented'));
+router.get('/songs/:id', async (req: express.Request, res: express.Response) => {
+  const { id } = req.params;
+  if (!id || Number.isNaN(Number(id))) {
+    return returnBadRequest(res, 'Please provide a valid song ID');
+  }
+  const song = await getSong(Number(id));
+  return returnResponseSuccess(res, song);
+});
 
 export default router;

@@ -80,11 +80,10 @@ export const getSong = async (id:number) => {
   const config = {
     headers: { Authorization: `Bearer ${GENIUS_API_KEY}` },
   };
-  return sampleSong;
-  const result = await axios.get(url, config);
-  const { song } = result.data.response;
-  return song;
-  return axios.get(url, config).then((res) => (res.data));
+
+  const songResult = sampleSong;
+  // const songResult = (await axios.get(url, config)).data;
+  return convertSongResult(songResult.response.song);
 };
 
 export const searchSongs = async (lyrics:string) : Promise<Song[]> => {

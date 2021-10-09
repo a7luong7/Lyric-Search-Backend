@@ -81,8 +81,8 @@ export const getSong = async (id:number) => {
     headers: { Authorization: `Bearer ${GENIUS_API_KEY}` },
   };
 
-  const songResult = sampleSong;
-  // const songResult = (await axios.get(url, config)).data;
+  // const songResult = sampleSong;
+  const songResult = (await axios.get(url, config)).data;
   return convertSongResult(songResult.response.song);
 };
 
@@ -100,7 +100,7 @@ export const searchSongsWithLyrics = async (lyrics:string, page:number)
 : Promise<SongSearchResponse | null> => {
   const baseUrl = 'https://genius.com/api/search/lyric';
   const url = `${baseUrl}?q=${encodeURI(lyrics)}&page=${page}`;
-  return convertGeniusLyricSearchResToSongs(sampleLyricsResults);
+  // return convertGeniusLyricSearchResToSongs(sampleLyricsResults);
   return axios.get(url).then((res) => convertGeniusLyricSearchResToSongs(res.data));
 };
 
@@ -124,7 +124,7 @@ const parseLyricsFromGeniusHTML = (html:string) : string => {
 export const getSongLyrics = async (lyricsPath:string) : Promise<string> => {
   const baseUrl = 'https://genius.com';
   const url = `${baseUrl}${lyricsPath}`;
-  return parseLyricsFromGeniusHTML(sampleLyricsRaw);
+  // return parseLyricsFromGeniusHTML(sampleLyricsRaw);
   return axios.get(url).then((result) => parseLyricsFromGeniusHTML(result.data));
 };
 

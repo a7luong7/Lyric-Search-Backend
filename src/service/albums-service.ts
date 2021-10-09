@@ -17,7 +17,7 @@ export const searchReleaseGroup = async (title:string, artist:string)
   + `&limit=${limit}`
   + '&fmt=json';
 
-  return sampleReleaseGroups;
+  // return sampleReleaseGroups;
   return axios.get(url)
     .then((res) => res.data)
     .catch((e) => {
@@ -31,7 +31,7 @@ export const getReleaseGroupAlbums = async (id:string)
   const baseUrl = 'https://musicbrainz.org/ws/2/release';
   const url = `${baseUrl}/?release-group=${id}&fmt=json`;
 
-  return sampleReleases;
+  // return sampleReleases;
   return axios.get(url)
     .then((res) => res.data.releases)
     .catch((e) => {
@@ -42,7 +42,7 @@ export const getReleaseGroupAlbums = async (id:string)
 
 export const searchReleaseCoverArt = async (id:string) : Promise<MusicBrainsCoverArtRes> => {
   const url = `http://coverartarchive.org/release/${id}-250`;
-  return sampleAlbumArt;
+  // return sampleAlbumArt;
   return axios.get(url)
     .then((res) => res.data)
     .catch((e) => {

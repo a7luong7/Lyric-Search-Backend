@@ -35,7 +35,7 @@ export const searchVideos = async (query:string)
   // + '&order=viewCount'
   + `&key=${YOUTUBE_API_KEY}`;
 
-  return convertYoutubeResults(sampleYoutubeResults);
+  // return convertYoutubeResults(sampleYoutubeResults);
   return axios.get(url)
     .then((res) => convertYoutubeResults(res.data))
     .catch((e) => {

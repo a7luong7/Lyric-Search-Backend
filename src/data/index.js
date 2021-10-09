@@ -1,0 +1,28 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sampleYoutubeResults = exports.sampleSearchResults = exports.sampleReleaseGroups = exports.sampleReleases = exports.sampleAlbumArt = exports.sampleAlbums = exports.sampleLyricsResults = exports.sampleLyricsRaw = exports.sampleLyrics = exports.sampleSong = exports.sampleSongs = void 0;
+const sample_songs_1 = __importDefault(require("./sample-songs"));
+exports.sampleSongs = sample_songs_1.default;
+const sample_song_1 = __importDefault(require("./sample-song"));
+exports.sampleSong = sample_song_1.default;
+const sample_lyrics_1 = __importDefault(require("./sample-lyrics"));
+exports.sampleLyrics = sample_lyrics_1.default;
+const sample_lyrics_raw_1 = __importDefault(require("./sample-lyrics-raw"));
+exports.sampleLyricsRaw = sample_lyrics_raw_1.default;
+const sample_lyrics_results_1 = __importDefault(require("./sample-lyrics-results"));
+exports.sampleLyricsResults = sample_lyrics_results_1.default;
+const sample_albums_1 = __importDefault(require("./sample-albums"));
+exports.sampleAlbums = sample_albums_1.default;
+const sample_album_art_1 = __importDefault(require("./sample-album-art"));
+exports.sampleAlbumArt = sample_album_art_1.default;
+const sample_releases_1 = __importDefault(require("./sample-releases"));
+exports.sampleReleases = sample_releases_1.default;
+const sample_release_groups_1 = __importDefault(require("./sample-release-groups"));
+exports.sampleReleaseGroups = sample_release_groups_1.default;
+const sample_search_results_1 = __importDefault(require("./sample-search-results"));
+exports.sampleSearchResults = sample_search_results_1.default;
+const sample_youtube_results_1 = __importDefault(require("./sample-youtube-results"));
+exports.sampleYoutubeResults = sample_youtube_results_1.default;

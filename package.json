@@ -4,8 +4,9 @@
   "description": "Funnel lyric search frontend calls to external APIs",
   "main": "index.ts",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node build/index.js",
+    "start": "cross-env NODE_ENV=production node src/index.js",
     "dev": "cross-env NODE_ENV=development nodemon src/index.ts",
+    "build:ui": "rm -rf build && cd ../lyric-search/ && npm run build --prod && cp -r build ../lyric-search-backend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
